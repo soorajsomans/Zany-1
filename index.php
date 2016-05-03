@@ -1,6 +1,7 @@
 <?php ob_start();
+session_start();
 include('includes/mysql_connection.php');
-          session_start();
+          
          error_reporting(E_ALL|E_STRICT);
          ini_set('display_errors',true);
           $msg = '';
@@ -39,18 +40,23 @@ include('includes/mysql_connection.php');
                }
        }
        elseif($_POST['action']=="register"){
-         $user=secure_input($_POST['rusername']);
+         $user=secure_input($_POST['uname']);
+	   $pass1=secure_input($_POST['pass1']);
          $pass=secure_input($_POST['rpassword']);
          $email=secure_input($_POST['remail']);
          if(!empty($user) && !empty($pass)){
+
            echo $user;
            echo $pass;
            echo $email;
-           $stmt = $con->prepare("INSERT INTO mysql.Registration_Zany ('name','email','password') VALUES (?,?,?)");
-           $stmt->bind_param("sss", $user, $pass, $email);
-           $stmt->execute();
-           $stmt->close();
-           $conn->close();
+
+
+$sql="INSERT INTO mysql.registration_zany (username, email, password) VALUES ('".$user."', '".$email."', '".$pass."')";
+
+	    $test=mysqli_query($con,$sql);
+	    		$msg="Registered Succesfully ";
+
+
            $msg1='<div class="alert alert-success">
   <strong>Success</strong> Succesfully Registered!</div>';
 
@@ -136,19 +142,11 @@ ob_flush(); ?>
 
         <form class="form-horizontal" role="form" method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']);?>" >
           <div class="form-group">
-            <label class="control-label col-sm-2" for="fn">First Name:</label>
+            <label class="control-label col-sm-2" for="fn">User  Name:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="rusername" id="fn" placeholder="Enter First Name">
+              <input type="text" class="form-control" name="uname" id="fn" placeholder="Enter UserName">
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="ln">Last Name:</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" id="ln" placeholder="Enter Last Name">
-            </div>
-          </div>
-
           <div class="form-group">
             <label class="control-label col-sm-2" for="email">Email:</label>
             <div class="col-sm-10">
@@ -166,7 +164,7 @@ ob_flush(); ?>
           <div class="form-group">
             <label class="control-label col-sm-2" for="cp">Confirm Password:</label>
             <div class="col-sm-10">
-              <input type="password" class="form-control" id="cp" placeholder="Confirm password">
+              <input type="password" class="form-control" name="pass1" id="cp" placeholder="Confirm password">
             </div>
           </div>
           <div class="form-group">
